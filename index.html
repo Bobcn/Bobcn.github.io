@@ -34,12 +34,11 @@
       <link rel="icon" type="image/x-icon" href="/favicon.png">
     
     <link rel="stylesheet" href="/css/uno.css">
-    <link rel="stylesheet" href="/css/highlight.css">
     <link rel="stylesheet" href="/css/archive.css">
     <link rel="stylesheet" href="/css/china-social-icon.css">
 
     <!-- Start: appended by Bob -->
-    <link href="http://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/prism.css">
     <!-- End: appended by Bob -->
 </head>
 <body>
@@ -205,12 +204,50 @@ classes that you can use:
     <li>
 
       <h2 class="post-list__post-title post-title">
-        <a href="/2018/03/23/hello-world/" title="link to Hello World">Hello World</a>
+        <a href="/2018/03/24/hexo_reset_image_size/" title="link to Hexo 中扩展 Markdown 语法设置图片的大小">Hexo 中扩展 Markdown 语法设置图片的大小</a>
       </h2>
 
       <div class="excerpt">
         
-          <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+          <p>在使用 Hexo 的过程中发现 Markdown 的原生语法貌似没办法设置图片的大小。</p>
+<p>在网上搜索了一下，貌似比较好的做法是：</p>
+<pre><code class="language-html">&lt;img src=&quot;/image/test.jpg&quot; width=&quot;50%&quot; height=&quot;50%&quot;&gt;
+</code></pre>
+<p>不过我还是想用 Markdown 的原生语法,于是用我抠脚的 JS 写了一个。</p>
+<p>可以在 Github 上下载源码 <a href="https://github.com/bobcn/hexo_resize_image.js" target="_blank" rel="noopener">-&gt; Here &lt;-</a>。</p>
+        
+      </div>
+
+      <div class="post-list__meta">
+
+        <time datetime="2018-03-24" class="post-list__meta--date date">2018-03-24</time>
+        <!-- Start: appended by Bob -->
+        <span class="post-list__meta--tags tags">
+        
+            <font class="categories">
+            &#8226; [
+            <a class="categories-link" href="/categories/小工具/">小工具</a>
+            ]
+            </font>
+          
+        </span>
+        <a class="btn-border-small" href="/2018/03/24/hexo_reset_image_size/">Details-></a>
+        <!-- End: appended by Bob -->
+      </div>
+
+      <hr class="post-list__divider" />
+    </li>
+    
+    <li>
+
+      <h2 class="post-list__post-title post-title">
+        <a href="/2018/03/23/build-blog-by-hexo/" title="link to 使用 Hexo 搭建博客">使用 Hexo 搭建博客</a>
+      </h2>
+
+      <div class="excerpt">
+        
+          <p><a href="https://hexo.io" target="_blank" rel="noopener">Hexo 官网</a> 提供了详细的文档。</p>
+<p>本文就一部分最主要的工作进行了记录。</p>
         
       </div>
 
@@ -221,12 +258,13 @@ classes that you can use:
         <span class="post-list__meta--tags tags">
         
             <font class="categories">
-            &#8226;
-            <a class="categories-link" href="/categories/test/">test</a>
+            &#8226; [
+            <a class="categories-link" href="/categories/配置环境/">配置环境</a>
+            ]
             </font>
           
         </span>
-        <a class="btn-border-small" href="/2018/03/23/hello-world/">Details-></a>
+        <a class="btn-border-small" href="/2018/03/23/build-blog-by-hexo/">Details-></a>
         <!-- End: appended by Bob -->
       </div>
 
@@ -282,8 +320,8 @@ classes that you can use:
 <![endif]-->
 
     <!-- Start: appended by Bob -->
-    <script src="http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js"></script>
-    <script >hljs.initHighlightingOnLoad();</script>
+    <script src="/js/prism.js"></script>
+    <script src="/js/image_size.js"></script>
     <!-- End: appended by Bob -->
 </body>
 </html>

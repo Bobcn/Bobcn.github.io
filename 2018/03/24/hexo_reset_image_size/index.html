@@ -7,7 +7,7 @@
     
 
     <title>
-      Category: test 
+      Hexo 中扩展 Markdown 语法设置图片的大小 | Bob Playground 
     </title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -16,28 +16,32 @@
     
     
 
-    <meta name="description" content="No pain no gain.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Category: test">
-<meta property="og:url" content="https://bobcn.github.io/categories/test/index.html">
+    <meta name="description" content="在使用 Hexo 的过程中发现 Markdown 的原生语法貌似没办法设置图片的大小。 在网上搜索了一下，貌似比较好的做法是： &amp;lt;img src=&amp;quot;/image/test.jpg&amp;quot; width=&amp;quot;50%&amp;quot; height=&amp;quot;50%&amp;quot;&amp;gt;  不过我还是想用 Markdown 的原生语法,于是用我抠脚的 JS 写了一个。 可以在 Gi">
+<meta name="keywords" content="Hexo,Markdown">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo 中扩展 Markdown 语法设置图片的大小 | Bob Playground">
+<meta property="og:url" content="https://bobcn.github.io/2018/03/24/hexo_reset_image_size/index.html">
 <meta property="og:site_name" content="Bob Playground">
-<meta property="og:description" content="No pain no gain.">
+<meta property="og:description" content="在使用 Hexo 的过程中发现 Markdown 的原生语法貌似没办法设置图片的大小。 在网上搜索了一下，貌似比较好的做法是： &amp;lt;img src=&amp;quot;/image/test.jpg&amp;quot; width=&amp;quot;50%&amp;quot; height=&amp;quot;50%&amp;quot;&amp;gt;  不过我还是想用 Markdown 的原生语法,于是用我抠脚的 JS 写了一个。 可以在 Gi">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://bobcn.github.io/image/test.jpg?200x200">
+<meta property="og:image" content="https://bobcn.github.io/image/test.jpg?40">
+<meta property="og:updated_time" content="2018-03-24T08:50:47.210Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Category: test">
-<meta name="twitter:description" content="No pain no gain.">
+<meta name="twitter:title" content="Hexo 中扩展 Markdown 语法设置图片的大小 | Bob Playground">
+<meta name="twitter:description" content="在使用 Hexo 的过程中发现 Markdown 的原生语法貌似没办法设置图片的大小。 在网上搜索了一下，貌似比较好的做法是： &amp;lt;img src=&amp;quot;/image/test.jpg&amp;quot; width=&amp;quot;50%&amp;quot; height=&amp;quot;50%&amp;quot;&amp;gt;  不过我还是想用 Markdown 的原生语法,于是用我抠脚的 JS 写了一个。 可以在 Gi">
+<meta name="twitter:image" content="https://bobcn.github.io/image/test.jpg?200x200">
     
     
     
       <link rel="icon" type="image/x-icon" href="/favicon.png">
     
     <link rel="stylesheet" href="/css/uno.css">
-    <link rel="stylesheet" href="/css/highlight.css">
     <link rel="stylesheet" href="/css/archive.css">
     <link rel="stylesheet" href="/css/china-social-icon.css">
 
     <!-- Start: appended by Bob -->
-    <link href="http://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/prism.css">
     <!-- End: appended by Bob -->
 </head>
 <body>
@@ -192,60 +196,84 @@ classes that you can use:
         <div class="content-wrapper__inner entry">
             
 
+<article class="post-container post-container--single">
 
-  <h1 class="archive-title">Category: test</h1>
-  <hr class="post-list__divider" />
-
-
-<div class="main-post-list">
-    <ol class="post-list">
+  <header class="post-header">
     
+    <h1 class="post-title">Hexo 中扩展 Markdown 语法设置图片的大小</h1>
+
     
-    <li>
 
-      <h2 class="post-list__post-title post-title">
-        <a href="/2018/03/23/hello-world/" title="link to Hello World">Hello World</a>
-      </h2>
+    <div class="post-meta">
+      <time datetime="2018-03-24" class="post-meta__date date">2018-03-24</time> 
 
-      <div class="excerpt">
-        
-          <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-        
-      </div>
+      <span class="post-meta__tags tags">
 
-      <div class="post-list__meta">
-
-        <time datetime="2018-03-23" class="post-list__meta--date date">2018-03-23</time>
-        <!-- Start: appended by Bob -->
-        <span class="post-list__meta--tags tags">
-        
+          
             <font class="categories">
-            &#8226;
-            <a class="categories-link" href="/categories/test/">test</a>
+            &#8226; 分类:
+            <a class="categories-link" href="/categories/小工具/">小工具</a>
             </font>
           
-        </span>
-        <a class="btn-border-small" href="/2018/03/23/hello-world/">Details-></a>
-        <!-- End: appended by Bob -->
-      </div>
 
-      <hr class="post-list__divider" />
-    </li>
-    
-  </ol>
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/Hexo/">Hexo</a>, <a class="tags-link" href="/tags/Markdown/">Markdown</a>
+            </font>
+          
 
-  <hr class="post-list__divider " />
-
-<nav class="pagination" role="navigation">
-    
-
-    <span class="pagination__page-number"> 1 / 1</span>
+      </span>
+    </div>
     
     
-</nav>
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <p>在使用 Hexo 的过程中发现 Markdown 的原生语法貌似没办法设置图片的大小。</p>
+<p>在网上搜索了一下，貌似比较好的做法是：</p>
+<pre><code class="language-html">&lt;img src=&quot;/image/test.jpg&quot; width=&quot;50%&quot; height=&quot;50%&quot;&gt;
+</code></pre>
+<p>不过我还是想用 Markdown 的原生语法,于是用我抠脚的 JS 写了一个。</p>
+<p>可以在 Github 上下载源码 <a href="https://github.com/bobcn/hexo_resize_image.js" target="_blank" rel="noopener">-&gt; Here &lt;-</a>。</p>
+<a id="more"></a>
+<h2>语法</h2>
+<p>扩展了 Markdown 的插图语法如下：</p>
+<ol>
+<li>
+<p>可指定像素</p>
+<p>方法是在 URL 后面添加 <code>?&lt;width&gt;x&lt;height&gt;</code></p>
+<pre><code class="language-markdown">![指定像素](/image/test.jpg?200x200)
+</code></pre>
+<p><img src="/image/test.jpg?200x200" alt="指定像素"></p>
+</li>
+<li>
+<p>可指定缩放比例</p>
+<p>方法是在 URL 后面添加 <code>?&lt;scale&gt;</code></p>
+<pre><code class="language-markdown">![指定比例](/image/test.jpg?40)
+</code></pre>
+<p><img src="/image/test.jpg?40" alt="指定比例"></p>
+</li>
+</ol>
+<h2>添加到页面中</h2>
+<p>在模板中为页面添加 js 脚本。</p>
+<p>我使用的是 huno 主题，在 <code>theme/huno/layout/layout.ejs</code> 中 <code>&lt;/body&gt;</code> 前添加了如下语句：</p>
+<pre><code class="language-html">&lt;script src=&quot;&lt;%- config.root %&gt;js/hexo_resize_image.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+
+  </section>
+
+  <section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
 
 
-</div>
+</article>
+
+
             <footer class="footer">
 
     <span class="footer__copyright">&copy; 2014-2015. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/someus/huno">Huno</a></span>
@@ -273,6 +301,18 @@ classes that you can use:
 
 
     
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
     
     
     <!--kill ie6 -->
@@ -281,8 +321,8 @@ classes that you can use:
 <![endif]-->
 
     <!-- Start: appended by Bob -->
-    <script src="http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js"></script>
-    <script >hljs.initHighlightingOnLoad();</script>
+    <script src="/js/prism.js"></script>
+    <script src="/js/image_size.js"></script>
     <!-- End: appended by Bob -->
 </body>
 </html>
