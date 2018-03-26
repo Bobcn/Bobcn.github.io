@@ -927,7 +927,7 @@ body {
   /*font-family: "Raleway", sans-serif;*/
   font-family:  "Raleway",Verdana,sans-serif,宋体, serif, "Droid Serif", Helvetica Neue, Helvetica, Arial;
   font-size: 1em;
-  color: #666666; }
+  color: #454545; }
 
 ::selection {
   background: #fae3df; }
@@ -951,8 +951,8 @@ h3,
 h4,
 h5,
 h5 {
-  margin-top: .8em;
-  margin-bottom: .4em;
+  margin-top: 1em;
+  margin-bottom: .5em;
   /*font-family: "Roboto Slab", serif;*/
   font-family: "Raleway",Verdana,sans-serif,宋体, serif, "Droid Serif", Helvetica Neue, Helvetica, Arial;
   font-weight: lighter;
@@ -1046,7 +1046,7 @@ code {
       color: #006699; }
 
 .excerpt {
-  margin: 0;
+  margin: .6em 0 0 0;
   font-size: .9em;
   color: #999999; }
 
@@ -1436,7 +1436,7 @@ i {
 
 .post-list__meta {
   display: block;
-  margin: .7em 0 0 0;
+  line-height: .1em;
   font-size: .9em;
   color: #c7c7c7; }
 
@@ -1718,8 +1718,17 @@ pre code {
 
 /* appended by Bob */
 .btn-border-small {
-  border: 1px solid #286294;
+  border: 1px solid #358ccb;
   border-radius: 20px;
   padding: 6px 8px;
   font-size: .8em;
   margin-left: 10px; }
+
+blockquote p {
+  color: #808080;
+}
+
+.flow-chart {
+  margin-bottom: 1.3em;
+  text-align: center;
+}

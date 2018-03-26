@@ -7,7 +7,7 @@
     
 
     <title>
-      Hexo 中扩展 Markdown 语法设置图片的大小 | Bob Playground 
+      实现 Y86 处理器 —— 组合电路 | Bob Playground 
     </title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -16,21 +16,25 @@
     
     
 
-    <meta name="description" content="在使用 Hexo 的过程中发现 Markdown 的原生语法貌似没办法设置图片的大小。 在网上搜索了一下，貌似比较好的做法是： &amp;lt;img src=&amp;quot;/image/test.jpg&amp;quot; width=&amp;quot;50%&amp;quot; height=&amp;quot;50%&amp;quot;&amp;gt;  不过我还是想用 Markdown 的原生语法,于是用我抠脚的 JS 写了一个。">
-<meta name="keywords" content="Hexo,Markdown">
+    <meta name="description" content="在硬件设计中，用电子电路来实现对位的运算，以及在各种存储器中存储位。 大多数的现代电路技术都是用信号线上的高低压来表示不同的位值。 在当前的技术中，逻辑 1 使用 1.0 V 左右的高电压表示，而逻辑 0 则是用 0.0 V 左右的低电压表示。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hexo 中扩展 Markdown 语法设置图片的大小 | Bob Playground">
-<meta property="og:url" content="https://bobcn.github.io/2018/03/24/hexo_reset_image_size/index.html">
+<meta property="og:title" content="实现 Y86 处理器 —— 组合电路 | Bob Playground">
+<meta property="og:url" content="https://bobcn.github.io/2018/03/26/make_y86_cpu_2/index.html">
 <meta property="og:site_name" content="Bob Playground">
-<meta property="og:description" content="在使用 Hexo 的过程中发现 Markdown 的原生语法貌似没办法设置图片的大小。 在网上搜索了一下，貌似比较好的做法是： &amp;lt;img src=&amp;quot;/image/test.jpg&amp;quot; width=&amp;quot;50%&amp;quot; height=&amp;quot;50%&amp;quot;&amp;gt;  不过我还是想用 Markdown 的原生语法,于是用我抠脚的 JS 写了一个。">
+<meta property="og:description" content="在硬件设计中，用电子电路来实现对位的运算，以及在各种存储器中存储位。 大多数的现代电路技术都是用信号线上的高低压来表示不同的位值。 在当前的技术中，逻辑 1 使用 1.0 V 左右的高电压表示，而逻辑 0 则是用 0.0 V 左右的低电压表示。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://bobcn.github.io/image/test.jpg?200x200">
-<meta property="og:image" content="https://bobcn.github.io/image/test.jpg?40">
-<meta property="og:updated_time" content="2018-03-25T13:47:58.451Z">
+<meta property="og:image" content="https://bobcn.github.io/image/2018/03/logic_gate.png?60">
+<meta property="og:image" content="https://bobcn.github.io/image/2018/03/check_equal_circuits.png?90">
+<meta property="og:image" content="https://bobcn.github.io/image/2018/03/word_equal_circuits.png?90">
+<meta property="og:image" content="https://bobcn.github.io/image/2018/03/bit_mux.png?90">
+<meta property="og:image" content="https://bobcn.github.io/image/2018/03/word_mux.png?90">
+<meta property="og:image" content="https://bobcn.github.io/image/2018/03/1_in_4_mux.png?90">
+<meta property="og:image" content="https://bobcn.github.io/image/2018/03/alu.gif?28">
+<meta property="og:updated_time" content="2018-03-26T02:11:06.290Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo 中扩展 Markdown 语法设置图片的大小 | Bob Playground">
-<meta name="twitter:description" content="在使用 Hexo 的过程中发现 Markdown 的原生语法貌似没办法设置图片的大小。 在网上搜索了一下，貌似比较好的做法是： &amp;lt;img src=&amp;quot;/image/test.jpg&amp;quot; width=&amp;quot;50%&amp;quot; height=&amp;quot;50%&amp;quot;&amp;gt;  不过我还是想用 Markdown 的原生语法,于是用我抠脚的 JS 写了一个。">
-<meta name="twitter:image" content="https://bobcn.github.io/image/test.jpg?200x200">
+<meta name="twitter:title" content="实现 Y86 处理器 —— 组合电路 | Bob Playground">
+<meta name="twitter:description" content="在硬件设计中，用电子电路来实现对位的运算，以及在各种存储器中存储位。 大多数的现代电路技术都是用信号线上的高低压来表示不同的位值。 在当前的技术中，逻辑 1 使用 1.0 V 左右的高电压表示，而逻辑 0 则是用 0.0 V 左右的低电压表示。">
+<meta name="twitter:image" content="https://bobcn.github.io/image/2018/03/logic_gate.png?60">
     
     
     
@@ -200,27 +204,22 @@ classes that you can use:
 
   <header class="post-header">
     
-    <h1 class="post-title">Hexo 中扩展 Markdown 语法设置图片的大小</h1>
+    <h1 class="post-title">实现 Y86 处理器 —— 组合电路</h1>
 
     
 
     <div class="post-meta">
-      <time datetime="2018-03-24" class="post-meta__date date">2018-03-24</time> 
+      <time datetime="2018-03-26" class="post-meta__date date">2018-03-26</time> 
 
       <span class="post-meta__tags tags">
 
           
             <font class="categories">
             &#8226; 分类:
-            <a class="categories-link" href="/categories/小工具/">小工具</a>
+            <a class="categories-link" href="/categories/《深入理解计算机系统》/">《深入理解计算机系统》</a>
             </font>
           
 
-          
-            &#8226; 标签:
-            <font class="tags">
-              <a class="tags-link" href="/tags/Hexo/">Hexo</a>, <a class="tags-link" href="/tags/Markdown/">Markdown</a>
-            </font>
           
 
       </span>
@@ -231,40 +230,98 @@ classes that you can use:
   </header>
 
   <section id="post-content" class="article-content post">
-    <p>在使用 Hexo 的过程中发现 Markdown 的原生语法貌似没办法设置图片的大小。</p>
-<p>在网上搜索了一下，貌似比较好的做法是：</p>
-<pre><code class="language-html">&lt;img src=&quot;/image/test.jpg&quot; width=&quot;50%&quot; height=&quot;50%&quot;&gt;
-</code></pre>
-<p>不过我还是想用 Markdown 的原生语法,于是用我抠脚的 JS 写了一个。</p>
+    <p>在硬件设计中，用电子电路来实现对位的运算，以及在各种存储器中存储位。</p>
+<p>大多数的现代电路技术都是用信号线上的高低压来表示不同的位值。</p>
+<p>在当前的技术中，逻辑 1 使用 1.0 V 左右的高电压表示，而逻辑 0 则是用 0.0 V 左右的低电压表示。</p>
 <a id="more"></a>
-<p>可以在 Github 上下载源码 <a href="https://github.com/bobcn/hexo_resize_image.js" target="_blank" rel="noopener">-&gt; Here &lt;-</a>。</p>
-<h2>语法</h2>
-<p>扩展了 Markdown 的插图语法如下：</p>
+<h2>逻辑门</h2>
+<p>逻辑门是数字电路的基本计算单位，它只对单个位的数进行运算。</p>
+<p><img src="/image/2018/03/logic_gate.png?60" alt="逻辑门类型"></p>
+<h2>组合电路和 HCL 表达式</h2>
+<p>将很多逻辑门组合在一起就能构建计算块（computation block），称为组合电路。</p>
+<blockquote>
+<p>构建组合电路有两个限制：</p>
+<p>1, 两个或多个逻辑门的输出不能连接在一起。</p>
+<p>2, 这个网必须是无环的。</p>
+</blockquote>
+<p>硬件描述语言（Hardware Description Language，HDL）是用来描述硬件状态的。</p>
+<blockquote>
+<p>下文使用的是 HDL 的一种：Verilog。</p>
+</blockquote>
+<h3>检测相等的组合电路</h3>
+<ul>
+<li>
+<p>位级实现</p>
+<p><img src="/image/2018/03/check_equal_circuits.png?90" alt="检测位相等的组合电路"></p>
+<p>HDL 描述：</p>
+<pre><code class="language-verilog">bool eq = (a &amp;&amp; b) || (!a &amp;&amp; !b);
+</code></pre>
+</li>
+<li>
+<p>字级实现</p>
+<p>将“字的大小”个位级实现电路的输出输入到一个 AND 门即可。</p>
+<p><img src="/image/2018/03/word_equal_circuits.png?90" alt="字级相等测试电路"></p>
+<pre><code class="language-verilog">bool Eq = (A == B);
+</code></pre>
+</li>
+</ul>
+<h3>多路复用器（multiplexor, MUX）</h3>
+<p>根据控制信号，从一组信号中选出一个。</p>
+<ul>
+<li>
+<p>位级实现</p>
+<p><img src="/image/2018/03/bit_mux.png?90" alt="单个位的多路复用器电路"></p>
+<pre><code class="language-verilog">bool out = (s &amp;&amp; a) || (!s &amp;&amp; b);
+</code></pre>
+</li>
+<li>
+<p>字级实现</p>
 <ol>
 <li>
-<p>可指定像素</p>
-<p>方法是在 URL 后面添加 <code>?&lt;width&gt;x&lt;height&gt;</code></p>
-<pre><code class="language-markdown">![指定像素](/image/test.jpg?200x200)
-</code></pre>
-<p><img src="/image/test.jpg?200x200" alt="指定像素"></p>
-<p>可以只指定一个参数，图片会等比例缩放。</p>
-<pre><code class="language-markdown">![仅指定width](/image/test.jpg?200x)
-![仅指定height](/image/test.jpg?x200)
+<p>二选一</p>
+<p><img src="/image/2018/03/word_mux.png?90" alt="字级多路复用器电路"></p>
+<pre><code class="language-verilog">int Out = [
+        s: A;
+        1: B;
+];
 </code></pre>
 </li>
 <li>
-<p>可指定缩放比例</p>
-<p>方法是在 URL 后面添加 <code>?&lt;scale&gt;</code>，等比例缩放图片大小至 <scale>%。</scale></p>
-<pre><code class="language-markdown">![指定比例](/image/test.jpg?40)
+<p>四选一</p>
+<p>四选一需要两位控制信号（s1、s2）才能指明要选的信号。</p>
+<p><img src="/image/2018/03/1_in_4_mux.png?90" alt="字级多路复用器电路"></p>
+<pre><code class="language-verilog">int Out = [
+        !s1 &amp;&amp; !s0: A;
+        !s1: B;
+        !s0: C;
+        1: D;
+];
 </code></pre>
-<p><img src="/image/test.jpg?40" alt="指定比例"></p>
 </li>
 </ol>
-<h2>添加到页面中</h2>
-<p>在模板中为页面添加 js 脚本。</p>
-<p>我使用的是 huno 主题，在 <code>theme/huno/layout/layout.ejs</code> 中 <code>&lt;/body&gt;</code> 前添加了如下语句：</p>
-<pre><code class="language-html">&lt;script src=&quot;&lt;%- config.root %&gt;js/hexo_resize_image.js&quot;&gt;&lt;/script&gt;
+</li>
+</ul>
+<h3>算数/逻辑单元（arithmetic logic unit，ALU）</h3>
+<blockquote>
+<p>ALU 是中央处理器（CPU）的执行单元，是所有 CPU 的核心组成部分。能实现多组算术运算和逻辑运算。</p>
+</blockquote>
+<p><img src="/image/2018/03/alu.gif?28" alt="字级多路复用器电路"></p>
+<p>这个电路有三个输入：的两个数据输入 A 和 B，以及一个控制输入 Opcode。</p>
+<p>根据控制输入信号，电路对数据输入执行不同的算数或逻辑运算并输出。</p>
+<h3>集合关系</h3>
+<p>在处理器设计中，很多时候需要将一个信号与多个可能的匹配值做比较，来检测该信号是哪个指令代码。</p>
+<p>例如用一个两位的信号 code 来控制筛选 4 个信号，四选一的 MUX 在上面已经介绍过了，现在需要通过 code 产生 s1 和 s2。</p>
+<p>假设 s1 表示 code 高位为 1，s0 表示 code 低位为 1，则有下面的 HDL 表达式：</p>
+<pre><code class="language-verilog">bool s1 = code in {2, 3};
+bool s0 = code in {1, 3};
 </code></pre>
+<h2>小结</h2>
+<p>上文只是列举了几个组合电路的实现。</p>
+<p>最重要的是要掌握：</p>
+<ol>
+<li>组合电路能够根据输入信号和某种规则而进行信号输出；</li>
+<li>组合电路不存储任何信息。</li>
+</ol>
 
   </section>
 
