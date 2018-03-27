@@ -28,8 +28,8 @@
 <meta property="og:image" content="https://bobcn.github.io/image/2018/03/seq_memory.png?120">
 <meta property="og:image" content="https://bobcn.github.io/image/2018/03/update_pc.png?120">
 <meta property="og:image" content="https://bobcn.github.io/image/2018/03/y86_fetch.png?100">
-<meta property="og:image" content="https://bobcn.github.io/image/2018/03/seq_structure.png?40">
-<meta property="og:updated_time" content="2018-03-27T09:12:10.046Z">
+<meta property="og:image" content="https://bobcn.github.io/image/2018/03/seq_structure.png">
+<meta property="og:updated_time" content="2018-03-27T09:47:35.398Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="实现 Y86 处理器 —— 指令执行分析及顺序实现 | Bob Playground">
 <meta name="twitter:description" content="我们初步要实现的处理器是顺序的，即完全执行完一条指令才执行下一条指令。 通常，会将不同的指令分解成相同的阶段序列，这样有利于简化处理器设计及充分利用硬件。 下面是各阶段的简略描述：">
@@ -447,7 +447,7 @@ classes that you can use:
 <h2>SEQ 处理器</h2>
 <p>将上面使用到的各个模块，按照信号的传递顺序连接起来，就形成了一个 SEQ（sequential 顺序的）处理器。</p>
 <p>在 SEQ 中所有硬件单元的处理都在一个时钟周期内完成。</p>
-<p><img src="/image/2018/03/seq_structure.png?40" alt="SEQ 硬件结构"></p>
+<p><img src="/image/2018/03/seq_structure.png" alt="SEQ 硬件结构"></p>
 <blockquote>
 <p>上图的白色椭圆中标注了线路的名字，并非硬件或控制逻辑等。</p>
 </blockquote>
