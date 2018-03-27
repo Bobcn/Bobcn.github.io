@@ -26,8 +26,8 @@
 <meta property="og:image" content="https://bobcn.github.io/image/2018/03/timer_wave.png?35">
 <meta property="og:image" content="https://bobcn.github.io/image/2018/03/timer_registor.png?80">
 <meta property="og:image" content="https://bobcn.github.io/image/2018/03/registor_file.png?80">
-<meta property="og:image" content="https://bobcn.github.io/image/2018/03/data_memory.png?90">
-<meta property="og:updated_time" content="2018-03-26T04:15:08.704Z">
+<meta property="og:image" content="https://bobcn.github.io/image/2018/03/data_memory.png?130">
+<meta property="og:updated_time" content="2018-03-27T07:04:08.463Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="实现 Y86 处理器 —— 需要的部件 | Bob Playground">
 <meta name="twitter:description" content="从本篇起，我们将自己实现一个 Y86 处理器。 首先看一下为了实现 Y86 处理器，我们都需要哪些部件。 我们已经知道，CPU 会逐条地执行机器指令。那么 CPU 是如何判断正在执行的指令是否执行完毕，继而可以开始执行下一条指令的呢？">
@@ -200,8 +200,6 @@ classes that you can use:
 <article class="post-container post-container--single">
 
   <header class="post-header">
-    
-    <h1 class="post-title">实现 Y86 处理器 —— 需要的部件</h1>
 
     
 
@@ -223,6 +221,8 @@ classes that you can use:
     </div>
     
     
+
+    <h1 class="post-title">实现 Y86 处理器 —— 需要的部件</h1>
 
   </header>
 
@@ -298,9 +298,10 @@ classes that you can use:
 <p>Y86 将要制定的指令与 IA32 相类似。</p>
 </blockquote>
 <p>下面来看另外一个存储程序数据的存储器：</p>
-<p><img src="/image/2018/03/data_memory.png?90" alt="数据存储器"></p>
+<p><img src="/image/2018/03/data_memory.png?130" alt="数据存储器"></p>
 <p>这个存储器只有一个地址接口。</p>
 <p>这意味着在一个时钟周期内，要么进行读操作，要么进行写操作。</p>
+<p>在 Y86 处理器中，使用随机访问存储器包括寄存器文件、指令存储器、程序数据存储器等。</p>
 <h2>小结</h2>
 <p>考察一个时钟周期的实质：</p>
 <div id="flowchart-0" class="flow-chart"></div>
@@ -311,6 +312,7 @@ classes that you can use:
 <p>由此，会引发一系列的改变：</p>
 <p>组合电路的输出会随着输入的改变而改变，存储器会因为读取地址的改变而改变输出值。</p>
 <p>由源头时钟寄存器输出改变而引发的变动在 CPU 中不断向前传递。最终，CPU 中各个部件的输入输出都会稳定下来。</p>
+<p>这时，CPU 就纯粹是在等待下一个时钟周期的到来了。</p>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/flowchart/1.6.5/flowchart.min.js"></script><textarea id="flowchart-0-code" style="display: none">st=>start: 时钟电压上升
 tr=>operation: 源头时钟寄存器的输出发生变化
 cm=>operation: 组合电路和存储器输入输出发生变化
@@ -322,6 +324,10 @@ st->tr->cm->ov->ed</textarea><textarea id="flowchart-0-options" style="display: 
   <section class="post-comments">
 
     <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2159960"></script>
+<!-- UY END -->
     
 </section>
 
@@ -345,7 +351,7 @@ st->tr->cm->ov->ed</textarea><textarea id="flowchart-0-options" style="display: 
 
     
 
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript"> 
         $(document).ready(function(){
             MathJax.Hub.Config({ 

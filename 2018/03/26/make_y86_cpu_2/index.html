@@ -23,18 +23,18 @@
 <meta property="og:site_name" content="Bob Playground">
 <meta property="og:description" content="在硬件设计中，用电子电路来实现对位的运算，以及在各种存储器中存储位。 大多数的现代电路技术都是用信号线上的高低压来表示不同的位值。 在当前的技术中，逻辑 1 使用 1.0 V 左右的高电压表示，而逻辑 0 则是用 0.0 V 左右的低电压表示。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://bobcn.github.io/image/2018/03/logic_gate.png?60">
+<meta property="og:image" content="https://bobcn.github.io/image/2018/03/logic_gate.png">
 <meta property="og:image" content="https://bobcn.github.io/image/2018/03/check_equal_circuits.png?90">
 <meta property="og:image" content="https://bobcn.github.io/image/2018/03/word_equal_circuits.png?90">
 <meta property="og:image" content="https://bobcn.github.io/image/2018/03/bit_mux.png?90">
 <meta property="og:image" content="https://bobcn.github.io/image/2018/03/word_mux.png?90">
 <meta property="og:image" content="https://bobcn.github.io/image/2018/03/1_in_4_mux.png?90">
 <meta property="og:image" content="https://bobcn.github.io/image/2018/03/alu.gif?28">
-<meta property="og:updated_time" content="2018-03-26T02:11:06.290Z">
+<meta property="og:updated_time" content="2018-03-27T07:26:39.148Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="实现 Y86 处理器 —— 组合电路 | Bob Playground">
 <meta name="twitter:description" content="在硬件设计中，用电子电路来实现对位的运算，以及在各种存储器中存储位。 大多数的现代电路技术都是用信号线上的高低压来表示不同的位值。 在当前的技术中，逻辑 1 使用 1.0 V 左右的高电压表示，而逻辑 0 则是用 0.0 V 左右的低电压表示。">
-<meta name="twitter:image" content="https://bobcn.github.io/image/2018/03/logic_gate.png?60">
+<meta name="twitter:image" content="https://bobcn.github.io/image/2018/03/logic_gate.png">
     
     
     
@@ -203,8 +203,6 @@ classes that you can use:
 <article class="post-container post-container--single">
 
   <header class="post-header">
-    
-    <h1 class="post-title">实现 Y86 处理器 —— 组合电路</h1>
 
     
 
@@ -227,6 +225,8 @@ classes that you can use:
     
     
 
+    <h1 class="post-title">实现 Y86 处理器 —— 组合电路</h1>
+
   </header>
 
   <section id="post-content" class="article-content post">
@@ -236,7 +236,7 @@ classes that you can use:
 <a id="more"></a>
 <h2>逻辑门</h2>
 <p>逻辑门是数字电路的基本计算单位，它只对单个位的数进行运算。</p>
-<p><img src="/image/2018/03/logic_gate.png?60" alt="逻辑门类型"></p>
+<p><img src="/image/2018/03/logic_gate.png" alt="逻辑门类型"></p>
 <h2>组合电路和 HCL 表达式</h2>
 <p>将很多逻辑门组合在一起就能构建计算块（computation block），称为组合电路。</p>
 <blockquote>
@@ -244,16 +244,16 @@ classes that you can use:
 <p>1, 两个或多个逻辑门的输出不能连接在一起。</p>
 <p>2, 这个网必须是无环的。</p>
 </blockquote>
-<p>硬件描述语言（Hardware Description Language，HDL）是用来描述硬件状态的。</p>
+<p>硬件控制语言（Hardware Control Language，HCL）用来描述硬件的控制部分。</p>
 <blockquote>
-<p>下文使用的是 HDL 的一种：Verilog。</p>
+<p>下文使用的是 HCL 的一种：Verilog。</p>
 </blockquote>
 <h3>检测相等的组合电路</h3>
 <ul>
 <li>
 <p>位级实现</p>
 <p><img src="/image/2018/03/check_equal_circuits.png?90" alt="检测位相等的组合电路"></p>
-<p>HDL 描述：</p>
+<p>HCL 描述：</p>
 <pre><code class="language-verilog">bool eq = (a &amp;&amp; b) || (!a &amp;&amp; !b);
 </code></pre>
 </li>
@@ -311,7 +311,7 @@ classes that you can use:
 <h3>集合关系</h3>
 <p>在处理器设计中，很多时候需要将一个信号与多个可能的匹配值做比较，来检测该信号是哪个指令代码。</p>
 <p>例如用一个两位的信号 code 来控制筛选 4 个信号，四选一的 MUX 在上面已经介绍过了，现在需要通过 code 产生 s1 和 s2。</p>
-<p>假设 s1 表示 code 高位为 1，s0 表示 code 低位为 1，则有下面的 HDL 表达式：</p>
+<p>假设 s1 表示 code 高位为 1，s0 表示 code 低位为 1，则有下面的 HCL 表达式：</p>
 <pre><code class="language-verilog">bool s1 = code in {2, 3};
 bool s0 = code in {1, 3};
 </code></pre>
@@ -328,6 +328,10 @@ bool s0 = code in {1, 3};
   <section class="post-comments">
 
     <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2159960"></script>
+<!-- UY END -->
     
 </section>
 
@@ -351,7 +355,7 @@ bool s0 = code in {1, 3};
 
     
 
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript"> 
         $(document).ready(function(){
             MathJax.Hub.Config({ 

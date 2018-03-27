@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      实现 Y86 处理器 —— 指令执行分析及顺序实现 | Bob Playground 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Bob">
+    
+    
+
+    <meta name="description" content="我们初步要实现的处理器是顺序的，即完全执行完一条指令才执行下一条指令。 通常，会将不同的指令分解成相同的阶段序列，这样有利于简化处理器设计及充分利用硬件。 下面是各阶段的简略描述：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="实现 Y86 处理器 —— 指令执行分析及顺序实现 | Bob Playground">
+<meta property="og:url" content="https://bobcn.github.io/2018/03/27/make_y86_cpu_4/index.html">
+<meta property="og:site_name" content="Bob Playground">
+<meta property="og:description" content="我们初步要实现的处理器是顺序的，即完全执行完一条指令才执行下一条指令。 通常，会将不同的指令分解成相同的阶段序列，这样有利于简化处理器设计及充分利用硬件。 下面是各阶段的简略描述：">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://bobcn.github.io/image/2018/03/seq_register_file.png?120">
+<meta property="og:image" content="https://bobcn.github.io/image/2018/03/seq_execute.png?110">
+<meta property="og:image" content="https://bobcn.github.io/image/2018/03/seq_memory.png?120">
+<meta property="og:image" content="https://bobcn.github.io/image/2018/03/update_pc.png?120">
+<meta property="og:image" content="https://bobcn.github.io/image/2018/03/y86_fetch.png?100">
+<meta property="og:image" content="https://bobcn.github.io/image/2018/03/seq_structure.png?40">
+<meta property="og:updated_time" content="2018-03-27T09:12:10.046Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="实现 Y86 处理器 —— 指令执行分析及顺序实现 | Bob Playground">
+<meta name="twitter:description" content="我们初步要实现的处理器是顺序的，即完全执行完一条指令才执行下一条指令。 通常，会将不同的指令分解成相同的阶段序列，这样有利于简化处理器设计及充分利用硬件。 下面是各阶段的简略描述：">
+<meta name="twitter:image" content="https://bobcn.github.io/image/2018/03/seq_register_file.png?120">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+
+    <!-- Start: appended by Bob -->
+    <link rel="stylesheet" href="/css/prism.css">
+    <!-- End: appended by Bob -->
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Bob Playground</a></h1>
+        <hr class="panel-cover__divider" />
+
+        
+        <p class="panel-cover__description">
+          Welcome to Bob‘s blog.
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">BLOG</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title="" class="">LIST</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title="" class="">ME</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/bobcn" title="Huno on GitHub">
+          <i class='icon icon-social-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+
+    
+
+    <div class="post-meta">
+      <time datetime="2018-03-27" class="post-meta__date date">2018-03-27</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+            <font class="categories">
+            &#8226; 分类:
+            <a class="categories-link" href="/categories/《深入理解计算机系统》/">《深入理解计算机系统》</a>
+            </font>
+          
+
+          
+
+      </span>
+    </div>
+    
+    
+
+    <h1 class="post-title">实现 Y86 处理器 —— 指令执行分析及顺序实现</h1>
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <p>我们初步要实现的处理器是顺序的，即完全执行完一条指令才执行下一条指令。</p>
+<p>通常，会将不同的指令分解成相同的阶段序列，这样有利于简化处理器设计及充分利用硬件。</p>
+<p>下面是各阶段的简略描述：</p>
+<a id="more"></a>
+<h2>将处理组织成阶段</h2>
+<ul>
+<li>
+<p>取指（fetch）：按 PC 保存的地址从存储器读取指令字节，并计算出紧邻的下一条指令的地址 valP。</p>
+</li>
+<li>
+<p>译码（decode）：从寄存器文件中读入所需的操作数 valA 和\或 valB。</p>
+</li>
+<li>
+<p>执行（execute）：该阶段计算出的值称为 valE。</p>
+</li>
+<li>
+<p>访存（memory）：从存储器读出数据 valM，或向存储器写入数据。</p>
+</li>
+<li>
+<p>写回（write back）：最多可以写两个结果到寄存器文件。</p>
+</li>
+<li>
+<p>更新 PC（PC update）：将 PC 设置成下一条指令的地址。</p>
+</li>
+</ul>
+<h2>追踪指令的执行</h2>
+<blockquote>
+<p>下表略去了取指阶段。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">指令</th>
+<th style="text-align:center">译码</th>
+<th style="text-align:center">执行</th>
+<th style="text-align:center">访存</th>
+<th style="text-align:center">写回</th>
+<th style="text-align:center">更新 PC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">cmovxx rA, rB</td>
+<td style="text-align:center">valA←R[rA]</td>
+<td style="text-align:center">valE←0+valA<br>Cnd←Cond(cc, ifun)</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">if(Cnd)<br>R[rB]←valE</td>
+<td style="text-align:center">PC←valP</td>
+</tr>
+<tr>
+<td style="text-align:center">irmovl V, rB</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">valE←0+valC</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">R[rB]←valE</td>
+<td style="text-align:center">PC←valP</td>
+</tr>
+<tr>
+<td style="text-align:center">rmmovl rA, D(rB)</td>
+<td style="text-align:center">valA←R[rA]<br>valB←R[rB]</td>
+<td style="text-align:center">valE←valB+valC</td>
+<td style="text-align:center">M[valE]←valA</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">PC←valP</td>
+</tr>
+<tr>
+<td style="text-align:center">mrmovl D(rB), rA</td>
+<td style="text-align:center">valA←R[rA]<br>valB←R[rB]</td>
+<td style="text-align:center">valE←valB+valC</td>
+<td style="text-align:center">valM←M[valE]</td>
+<td style="text-align:center">R[rA]←valM</td>
+<td style="text-align:center">PC←valP</td>
+</tr>
+<tr>
+<td style="text-align:center">OPl rA, rB</td>
+<td style="text-align:center">valA←R[rA]<br>valB←R[rB]</td>
+<td style="text-align:center">valE←valB OP valA<br>set CC</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">R[rB]←valE</td>
+<td style="text-align:center">PC←valP</td>
+</tr>
+<tr>
+<td style="text-align:center">JXX Dest</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">Cnd←Cond(cc, ifun)</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">PC←Cnd?valC:valP</td>
+</tr>
+<tr>
+<td style="text-align:center">call Dest</td>
+<td style="text-align:center">valB←R[%esp]</td>
+<td style="text-align:center">valE←valB-4</td>
+<td style="text-align:center">M[valE]←valP</td>
+<td style="text-align:center">R[%esp]←valE</td>
+<td style="text-align:center">PC←valC</td>
+</tr>
+<tr>
+<td style="text-align:center">ret</td>
+<td style="text-align:center">valA←R[%esp]<br>valB←R[%esp]</td>
+<td style="text-align:center">valE←valB+4</td>
+<td style="text-align:center">valM←M[valA]</td>
+<td style="text-align:center">R[%esp]←valE</td>
+<td style="text-align:center">PC←valM</td>
+</tr>
+<tr>
+<td style="text-align:center">pushl rA</td>
+<td style="text-align:center">valA←R[rA]<br>valB←R[%esp]</td>
+<td style="text-align:center">valE←valB-4</td>
+<td style="text-align:center">M[valE]←valA</td>
+<td style="text-align:center">R[%esp]←valE</td>
+<td style="text-align:center">PC←valP</td>
+</tr>
+<tr>
+<td style="text-align:center">popl rA</td>
+<td style="text-align:center">valA←R[%esp]<br>valB←R[%esp]</td>
+<td style="text-align:center">valE←valB+4</td>
+<td style="text-align:center">valM←M[valA]</td>
+<td style="text-align:center">R[%esp]←valE<br>R[rA]←valM</td>
+<td style="text-align:center">PC←valP</td>
+</tr>
+</tbody>
+</table>
+<p>下面来分析一下上表中对各个指令执行的追踪情况，并为各阶段使用的硬件接入输入信号。</p>
+<h3>译码和写回阶段</h3>
+<p>观察译码和写回阶段可以看出：需要一个可以同时读取两个寄存器、同时写入两个寄存器的寄存器文件。</p>
+<p>valA 读取地址可能是 rA 或 %esp，valB 读取地址可能是 rB 或 %esp。</p>
+<p>valM 写入地址可能是 rA，valE 写入地址可能是 rB 或 %esp。</p>
+<blockquote>
+<p><code>call</code> <code>ret</code> <code>pushl</code> <code>popl</code> 指令在译码阶段都会获取 %esp 寄存器的数据，在写回阶段会更新 %esp 的数据。这几条指令都会对栈进行操作。</p>
+</blockquote>
+<p>对于 <code>cmovxx</code> 指令，还需要 Cnd 值以判断是否写入 valE。</p>
+<p>所以，可以如下配置信号输入：</p>
+<p><img src="/image/2018/03/seq_register_file.png?120" alt="SEQ 译码和写回阶段"></p>
+<p>总结上表可以写出 srcA 这个组合电路的 HCL 表达式：</p>
+<pre><code class="language-verilog">int srcA = [
+        icode in { IRRMOVL, IRMMOVL, IOPL, IPUSHL } : rA;
+        icode in { IPOPL, IRET } : RESP;
+        1: RNONE;
+];
+</code></pre>
+<p>类似地，可以写出其他组合电路的 HCL 表达式。</p>
+<blockquote>
+<p>注意：<br>
+图中的矩形表示硬件单元；圆角矩形表示控制逻辑。<br>
+图中不同样式的线代表不同的传输宽度：粗线表示宽度为字长；细线表示字节或更窄；虚线表示单个位。</p>
+</blockquote>
+<h3>执行阶段</h3>
+<p>注意 <code>mrmovl D(rB), rA</code> 指令，为什么使用 <code>D(rB), rA</code> 而不是 <code>D(rA), rB</code> 呢？</p>
+<p>观察上表的执行阶段可以发现，只存在 valA 和 valB 之间、valB 和 valC 之间的运算，而不存在 valA 和 valC 之间的运算。</p>
+<p>这样，就可以使得 ALU 的一个数据输入直接接入 valB；而另一个数据输入则可使用一个 MUX的输出，该 MUX 以 valA 和 valC 为输入，icode 为控制信号。</p>
+<p>这样的设计是比较简单的。</p>
+<p>所以，可以如下配置信号输入：</p>
+<p><img src="/image/2018/03/seq_execute.png?110" alt="SEQ 执行阶段"></p>
+<p>ALU fun. 是 ALU 的控制器。</p>
+<p>对于 OPl 指令，它的输出和 OPl 的功能码 ifun 一致；其他指令，均使用加法操作即可。</p>
+<pre><code class="language-verilog">int alufun = [
+        icode == IOPL : ifun;
+        1 : ALUADD;
+]
+</code></pre>
+<p>另外，我们只希望在 OPl 指令时才设置条件码，图中的 SetCC 就是控制是否使用条件码寄存器 CC 的。</p>
+<pre><code class="language-verilog">bool set_cc = icode in { IOPL };
+</code></pre>
+<p>不同指令在执行阶段的操作：</p>
+<ul>
+<li>
+<p>对于 OPl 指令（icode = 2），要根据 ifun 代码，计算结果，并可能设置条件码。</p>
+</li>
+<li>
+<p>对于 <code>rmmovl</code> <code>mrmovl</code> 指令，要计算存储器的有效地址。</p>
+</li>
+<li>
+<p>对于 <code>call</code> <code>ret</code> <code>pushl</code> <code>popl</code> 指令，则要计算 %esp 的新值。</p>
+</li>
+<li>
+<p>对于 JXX 和 CMOV 指令，则要根据 ifun 和 CC 计算 Cnd 值（表示是否执行指令）。</p>
+</li>
+</ul>
+<blockquote>
+<p>这里有个问题，为什么 cond 要使用一个硬件，而不是控制逻辑？</p>
+</blockquote>
+<h3>访存阶段</h3>
+<p>观察访存阶段可以总结出：</p>
+<ol>
+<li>
+<p>写入指令：<code>rmmovl</code> <code>call</code> <code>pushl</code></p>
+</li>
+<li>
+<p>读取指令：<code>mrmovl</code> <code>ret</code> <code>popl</code></p>
+</li>
+<li>
+<p>存储器地址输入可能是 valE 或 valA，写入值可能是 valA 或 valP。</p>
+</li>
+</ol>
+<p>观察 <code>ret</code> 和 <code>popl rA</code> 可以看到，对于二者，valA 和 valB 是相同的值，但是它们都选择了 valA 作为存储器地址使用。正式因为这种一致性，我们最终只需要在 valE 和 valA 筛选出一个作为地址输送给存储器。</p>
+<p>所以，可以如下配置信号输入：</p>
+<p><img src="/image/2018/03/seq_memory.png?120" alt="SEQ 访存阶段"></p>
+<h3>更新 PC 阶段</h3>
+<p>观察更新 PC 阶段，可能的值有：valC（<code>jmp</code>；<code>call</code> 或 JXX 为 Cnd = 1 时）；valM（<code>ret</code>）；valP。</p>
+<p>所以，可以如下配置信号输入：</p>
+<p><img src="/image/2018/03/update_pc.png?120" alt="SEQ 更新 PC 阶段"></p>
+<h3>取指阶段</h3>
+<p><img src="/image/2018/03/y86_fetch.png?100" alt="SEQ 译码和写回阶段"></p>
+<p>从指令存储器取出指令后，首字节被保存到 Split 中，其他字节被保存到 Align 中。</p>
+<p>首字节被拆分为 icode 和 ifun；而 icode 又被拆分为 Need regids 和 Need valC。</p>
+<p>根据 Need regids 和 Need valC，PC 增加单元就能够计算出下一条指令的地址。</p>
+<p>根据 Need regids，Align 就能够知道如何处理其保存的字节：</p>
+<ul>
+<li>need_regids == 1 则拆分其保存的首字节为 rA 和 rB 输出，并将后面的字节作为 valC 输出。</li>
+<li>need_regids == 0 则将其保存的 0 ~ 3 字节作为 valC 输出。</li>
+</ul>
+<blockquote>
+<p>注意：Align 并不需要 Need valC 这个信号的控制。</p>
+</blockquote>
+<h2>SEQ 处理器</h2>
+<p>将上面使用到的各个模块，按照信号的传递顺序连接起来，就形成了一个 SEQ（sequential 顺序的）处理器。</p>
+<p>在 SEQ 中所有硬件单元的处理都在一个时钟周期内完成。</p>
+<p><img src="/image/2018/03/seq_structure.png?40" alt="SEQ 硬件结构"></p>
+<blockquote>
+<p>上图的白色椭圆中标注了线路的名字，并非硬件或控制逻辑等。</p>
+</blockquote>
+<h3>状态码</h3>
+<p>这里需要补充说一下异常状态码。</p>
+<p>在取指阶段可能会产生 imem_error（指令地址不合法）和 instr_valid（不合法的指令）两个异常。</p>
+<p>在取指阶段的示意图中，可以看到 icode 单元受到 imem_error 的控制，当 imem_error 异常出现时，将会执行 <code>nop</code> 指令。</p>
+<p>在访存阶段，数据存储器可能会产生 dmem_error 异常，读取或写入地址不合法。</p>
+<p>在访存阶段，这三种异常和 icode 一起经过 Stat 单元计算出状态码。</p>
+<blockquote>
+<p>SEQ 只是一个过度的模型，无需深究其异常处理。</p>
+</blockquote>
+
+  </section>
+
+  <section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2159960"></script>
+<!-- UY END -->
+    
+</section>
+
+
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2014-2015. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/someus/huno">Huno</a></span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+    
+
+    
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+    <!-- Start: appended by Bob -->
+    <script src="/js/prism.js"></script>
+    <script src="/js/image_size.js"></script>
+    <!-- End: appended by Bob -->
+</body>
+</html>

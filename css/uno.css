@@ -952,10 +952,10 @@ h4,
 h5,
 h5 {
   margin-top: 1em;
-  margin-bottom: .5em;
+  margin-bottom: 1em;
   /*font-family: "Roboto Slab", serif;*/
   font-family: "Raleway",Verdana,sans-serif,宋体, serif, "Droid Serif", Helvetica Neue, Helvetica, Arial;
-  font-weight: lighter;
+  font-weight: normal;
   color: #333333;
   -webkit-font-smoothing: antialiased; }
 
@@ -974,9 +974,6 @@ h3 {
 h4 {
   font-size: 1.2em; }
 
-h4 {
-  font-size: 1.1em; }
-
 h5 {
   font-size: 1em; }
 
@@ -992,7 +989,7 @@ em {
 
 blockquote {
   padding: 5px 20px;
-  margin: 0 0 20px;
+  margin: 0 0 20px 0.2em;
   font-family: "ff-tisa-web-pro-1", "ff-tisa-web-pro-2", "Lucida Grande", "Hiragino Sans GB", "Hiragino Sans GB W3", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
   font-weight: lighter;
   font-size: 0.9em;
@@ -1019,8 +1016,8 @@ code {
   padding: .4em;
   padding-top: .2em;
   padding-bottom: .1em;
-  background: #e8f2fb;
-  border: 1px solid #c9e1f6;
+  background: #458ed10a;
+  border: 1px solid #368bcb;
   border-radius: 3px;
   font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
   font-size: 0.9em;
@@ -1088,11 +1085,11 @@ code {
   z-index: 800;
 /*  width: 68%;
   max-width: 960px;*/
-  margin-left: 32%; }
+  margin-left: 26%; }
 
 .content-wrapper__inner {
-  margin: 0 10%;
-  padding: 50px 0; }
+  margin: 0 8%;
+  padding: 60px 0; }
 
 .footer {
   display: block;
@@ -1132,7 +1129,7 @@ hr {
   padding: 60px 0; }
 
 .post-meta {
-  margin: 0 0 1.4em 0;
+  margin: 0 0 0.4em 0;
   color: #c7c7c7; }
 
 .post-meta__date {
@@ -1175,7 +1172,7 @@ hr {
 
 .panel-title {
   margin: 0 0 5px 0;
-  font-size: 2.5em;
+  font-size: 2.0em;
   letter-spacing: 4px;
   color: #FFF; }
 
@@ -1198,9 +1195,9 @@ hr {
   background-size: cover; }
 
 .panel-cover--collapsed {
-  /*width: 32%;*/
-  width: 30%;
-  max-width: 400px; }
+  /* width 调整需要同样调整 .content-wrapper 中的值 */
+  width: 26%;
+  max-width: 700px; }
 
 .panel-cover--overlay {
   display: block;
@@ -1213,7 +1210,7 @@ hr {
   background-color: rgba(68, 68, 68, 0.2);
   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(20%, rgba(68, 68, 68, 0.6)), color-stop(100%, rgba(0, 0, 0, 0.9)));
   background-image: -webkit-linear-gradient(-410deg, rgba(68, 68, 68, 0.6) 20%, rgba(0, 0, 0, 0.9));
-  background-image: linear-gradient(140deg,rgba(68, 68, 68, 0.6) 20%, rgba(0, 0, 0, 0.9)); }
+  background-image: linear-gradient(140deg,rgba(68, 68, 68, 0.4) 20%, rgba(0, 0, 0, 0.9)); }
 
 .panel-cover__logo {
   margin-bottom: .2em; }
@@ -1240,7 +1237,7 @@ hr {
   vertical-align: middle;
   position: relative;
   z-index: 800;
-  padding: 0 60px; }
+  padding: 0 20px; }
 
 .panel-main__content {
   max-width: 620px;
@@ -1297,7 +1294,7 @@ hr {
   padding: 10px 20px;
   border: 1px solid #006699;
   border-radius: 20px;
-  font-size: .9em;
+  font-size: .8em;
   font-weight: bold;
   letter-spacing: 1px;
   text-shadow: none;
@@ -1547,8 +1544,8 @@ input[type="tel"] {
     color: #cccccc; }
 
 @media all and (min-width: 1300px) {
-  .content-wrapper {
-    margin-left: 400px; } }
+  /*.content-wrapper {
+    margin-left: 400px; }*/ }
 @media all and (max-width: 1100px) {
   .panel-cover__logo {
     width: 70px; }
@@ -1675,7 +1672,7 @@ input[type="tel"] {
 table {
   border-collapse: collapse;
   width: 100%;
-  margin: 0 0 10px;
+  margin: 0 0 1.3em;
   border-spacing: 0; 
   border: 1px solid #aaa;
 }
@@ -1727,6 +1724,45 @@ pre code {
 blockquote p {
   color: #808080;
 }
+
+blockquote p code {
+  border: 1px solid #808080;
+}
+
+table {
+  color: #333333;
+  font-size: .9em;
+  text-align: center;
+  line-height: 40px;
+  border-spacing: 0;
+  border: 2px solid #368bcb;
+  width: 96%;
+  margin: 1em auto; }
+
+thead tr:first-child {
+  background-color: #368bcb;
+  color: #F8F8F8;
+  border: none; }
+
+th {
+  font-weight: bold; }
+
+th:first-child, td:first-child {
+  padding: 0 15px 0 20px; }
+
+thead tr:last-child th {
+  border-bottom: 1px solid #DDDDDD; }
+
+tbody tr:last-child td {
+  /*border: none;*/
+   }
+
+tbody td {
+  border-bottom: 1px solid #DDDDDD;
+  font-size: .85em; }
+
+td:last-child {
+  padding-right: 10px; }
 
 .flow-chart {
   margin-bottom: 1.3em;

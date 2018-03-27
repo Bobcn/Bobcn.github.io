@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      实现 Y86 处理器 —— 指令集体系结构 | Bob Playground 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Bob">
+    
+    
+
+    <meta name="description" content="指令被编码为由一个或多个字节序列组成的二进制格式。 一个处理器支持的指令和指令的字节级编码称为它的 指令集体系结构（Instruction-Set Architecture, ISA）。 定义一个指令集体系结构，包括：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="实现 Y86 处理器 —— 指令集体系结构 | Bob Playground">
+<meta property="og:url" content="https://bobcn.github.io/2018/03/27/make_y86_cpu_3/index.html">
+<meta property="og:site_name" content="Bob Playground">
+<meta property="og:description" content="指令被编码为由一个或多个字节序列组成的二进制格式。 一个处理器支持的指令和指令的字节级编码称为它的 指令集体系结构（Instruction-Set Architecture, ISA）。 定义一个指令集体系结构，包括：">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://bobcn.github.io/image/2018/03/cpu_status_for_coder.png?80">
+<meta property="og:image" content="https://bobcn.github.io/image/2018/03/y86_ISA.png">
+<meta property="og:image" content="https://bobcn.github.io/image/2018/03/function_code.png?110">
+<meta property="og:image" content="https://bobcn.github.io/image/2018/03/y86_stat.png">
+<meta property="og:updated_time" content="2018-03-27T09:12:05.358Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="实现 Y86 处理器 —— 指令集体系结构 | Bob Playground">
+<meta name="twitter:description" content="指令被编码为由一个或多个字节序列组成的二进制格式。 一个处理器支持的指令和指令的字节级编码称为它的 指令集体系结构（Instruction-Set Architecture, ISA）。 定义一个指令集体系结构，包括：">
+<meta name="twitter:image" content="https://bobcn.github.io/image/2018/03/cpu_status_for_coder.png?80">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+
+    <!-- Start: appended by Bob -->
+    <link rel="stylesheet" href="/css/prism.css">
+    <!-- End: appended by Bob -->
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Bob Playground</a></h1>
+        <hr class="panel-cover__divider" />
+
+        
+        <p class="panel-cover__description">
+          Welcome to Bob‘s blog.
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">BLOG</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title="" class="">LIST</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title="" class="">ME</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/bobcn" title="Huno on GitHub">
+          <i class='icon icon-social-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+
+    
+
+    <div class="post-meta">
+      <time datetime="2018-03-27" class="post-meta__date date">2018-03-27</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+            <font class="categories">
+            &#8226; 分类:
+            <a class="categories-link" href="/categories/《深入理解计算机系统》/">《深入理解计算机系统》</a>
+            </font>
+          
+
+          
+
+      </span>
+    </div>
+    
+    
+
+    <h1 class="post-title">实现 Y86 处理器 —— 指令集体系结构</h1>
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <p>指令被编码为由一个或多个字节序列组成的二进制格式。</p>
+<p>一个处理器支持的指令和指令的字节级编码称为它的 <em>指令集体系结构（Instruction-Set Architecture, ISA）。</em></p>
+<p>定义一个指令集体系结构，包括：</p>
+<a id="more"></a>
+<ul>
+<li>定义各种状态元素</li>
+<li>指令集和它们的编码</li>
+<li>一组编程规范</li>
+<li>异常事件处理</li>
+</ul>
+<h2>程序员可见状态</h2>
+<p>汇编语言可以读取或修改的处理器状态。</p>
+<p><img src="/image/2018/03/cpu_status_for_coder.png?80" alt="程序员可见状态"></p>
+<blockquote>
+<p>CPU 硬件实现并不一定存在这些组件，可以理解为这是 CPU 底层硬件开放给汇编语言的接口。</p>
+</blockquote>
+<h2>Y86 指令</h2>
+<p><img src="/image/2018/03/y86_ISA.png" alt="Y86 指令集"></p>
+<h3>指令格式</h3>
+<p>每条指令需要 1 ~ 6 个字节不等。</p>
+<ul>
+<li>
+<p>第 1 个字节：表明指令的类型</p>
+<p>高 4 位：指令代码（code）部分 + 低 4 位：功能代码（function）部分</p>
+<p>当一组指令共用一个指令代码时，功能代码部分才有用。</p>
+</li>
+<li>
+<p>第 2 个字节：指令用到的寄存器地址 rA 和 rB</p>
+<p>8 个程序寄存器分别对应 0 ~ 7 的寄存器标识符（register ID）。所以，可用 4 位来表示这些寄存器。</p>
+<p>不需要访问任何寄存器时，就用 0xF 来表示。</p>
+</li>
+<li>
+<p>第 3 ~ 5 共 4 个字节：常数字（constant word）</p>
+</li>
+</ul>
+<p>Y86 指令集基本上是 IA32 的子集。它只包括四字节整数运算，寻址方式比较少，操作也比较少。</p>
+<blockquote>
+<p>好处是方便我们学习理解 CPU 的实现机制。</p>
+</blockquote>
+<h3>指令详解</h3>
+<p><img src="/image/2018/03/function_code.png?110" alt="Y86 指令集的功能码"></p>
+<h4>MOV 数据传送指令</h4>
+<p>共 4 个，包括 <code>irmovl</code> <code>rrmovl</code> <code>mrmovl</code> 和 <code>rmmmovl</code>。</p>
+<p>首字母表示来源类型，第二个字母表示了目的类型。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">字母</th>
+<th style="text-align:center">类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">i</td>
+<td style="text-align:center">立即数</td>
+</tr>
+<tr>
+<td style="text-align:center">r</td>
+<td style="text-align:center">寄存器</td>
+</tr>
+<tr>
+<td style="text-align:center">m</td>
+<td style="text-align:center">存储器</td>
+</tr>
+</tbody>
+</table>
+<p>存储器引用方式为基址+偏移量形式（Imm(E)），上图中的常数字 D 就是偏移量。</p>
+<h4>OP 整数操作</h4>
+<p>共 4 个，包括 <code>addl</code> <code>subl</code> <code>andl</code> 和 <code>xorl</code>。</p>
+<p>如上图所示，只对寄存器数据进行操作。</p>
+<p>这些指令会设置条件码 ZF、SF 和 OF（零、符号和溢出）。</p>
+<h4>JXX 跳转指令</h4>
+<p>共 7 个，包括 <code>jmp</code> <code>jle</code> <code>jl</code> <code>je</code> <code>jne</code> <code>jge</code> 和 <code>jg</code>。</p>
+<p>根据条件码来选择分支。</p>
+<h4>CMOV 条件传送指令</h4>
+<p>共 6 个，包括 <code>cmovle</code> <code>cmovl</code> <code>cmove</code> <code>cmovne</code> <code>cmoge</code> 和 <code>cmovg</code>。</p>
+<p>他们与 rrmovl 一样，都是在两个寄存器之间传送数据，但是只有条件码匹配时，才会执行。</p>
+<h4>CALL 和 RET</h4>
+<p><code>call</code> 指令将返回地址入栈，然后跳转到目的地址。<code>ret</code> 指令从这样的过程调用中返回。</p>
+<h4>PUSH 和 POP</h4>
+<p><code>pushl</code> 和 <code>popl</code> 分别实现了入栈和出栈。</p>
+<h4>HALT</h4>
+<p>停止指令的运行，并将状态码设置为 HLT。</p>
+<h3>另外，</h3>
+<p>简单起见，<strong>跳转指令和 <code>call</code> 指令使用绝对地址</strong>，而不像 IA32 那样使用相对 PC 的相对寻址方式。</p>
+<p>同 IA32 一样，所有整数采取<strong>小端法编码</strong>。所以，反汇编后，这些字节会以相反的顺序出现。</p>
+<blockquote>
+<p>指令集的一个重要性质就是字节编码必须有唯一的解释。</p>
+<p>Y86 每条指令的第一个字节有唯一的代码和功能组合，可以决定所有其他附加字节的长度和含义。</p>
+</blockquote>
+<h2>Y86 异常</h2>
+<p>状态码 Stat 描述了程序执行的总体状态。</p>
+<p><img src="/image/2018/03/y86_stat.png" alt="Y86 状态码"></p>
+<blockquote>
+<p>对于 Y86，遇到非 AOK 的状态码时，只是简单地让处理器停止执行指令。在更完整的设计中，处理器通常会调用一个 <em>异常处理程序（exception handler）</em>。</p>
+</blockquote>
+<h2>一些 Y86 指令的详情</h2>
+<p>两个特别的指令组合需要注意：</p>
+<pre><code class="language-assembly">pushl %esp
+
+popl %esp
+</code></pre>
+<p>在下一篇中将会得到答案。</p>
+
+  </section>
+
+  <section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2159960"></script>
+<!-- UY END -->
+    
+</section>
+
+
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2014-2015. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/someus/huno">Huno</a></span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+    
+
+    
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+    <!-- Start: appended by Bob -->
+    <script src="/js/prism.js"></script>
+    <script src="/js/image_size.js"></script>
+    <!-- End: appended by Bob -->
+</body>
+</html>
