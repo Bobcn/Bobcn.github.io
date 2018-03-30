@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      实现 Y86 处理器 —— 流水线实现 | Bob Playground 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Bob">
+    
+    
+
+    <meta name="description" content="在 SEQ 的结构中，一条指令必须等到它之前的指令执行完毕，才能被执行。 通过流水线技术，可以增加系统的 吞吐量（throughput），也就是单位时间内执行的指令数量。 执行一条指令所花费的时间称为 延迟（latency）。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="实现 Y86 处理器 —— 流水线实现 | Bob Playground">
+<meta property="og:url" content="https://bobcn.github.io/2018/03/30/make_y86_cpu_5/index.html">
+<meta property="og:site_name" content="Bob Playground">
+<meta property="og:description" content="在 SEQ 的结构中，一条指令必须等到它之前的指令执行完毕，才能被执行。 通过流水线技术，可以增加系统的 吞吐量（throughput），也就是单位时间内执行的指令数量。 执行一条指令所花费的时间称为 延迟（latency）。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://bobcn.github.io/image/2018/03/un_pipeline.png?120">
+<meta property="og:image" content="https://bobcn.github.io/image/2018/03/pipeline.png?120">
+<meta property="og:image" content="https://bobcn.github.io/image/2018/03/pipe-.png?120">
+<meta property="og:updated_time" content="2018-03-30T09:07:28.955Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="实现 Y86 处理器 —— 流水线实现 | Bob Playground">
+<meta name="twitter:description" content="在 SEQ 的结构中，一条指令必须等到它之前的指令执行完毕，才能被执行。 通过流水线技术，可以增加系统的 吞吐量（throughput），也就是单位时间内执行的指令数量。 执行一条指令所花费的时间称为 延迟（latency）。">
+<meta name="twitter:image" content="https://bobcn.github.io/image/2018/03/un_pipeline.png?120">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+
+    <!-- Start: appended by Bob -->
+    <link rel="stylesheet" href="/css/prism.css">
+    <!-- End: appended by Bob -->
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Bob Playground</a></h1>
+        <hr class="panel-cover__divider" />
+
+        
+        <p class="panel-cover__description">
+          Welcome to Bob‘s blog.
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">BLOG</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title="" class="">LIST</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title="" class="">ME</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/bobcn" title="Huno on GitHub">
+          <i class='icon icon-social-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+
+    
+
+    <div class="post-meta">
+      <time datetime="2018-03-30" class="post-meta__date date">2018-03-30</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+            <font class="categories">
+            &#8226; 分类:
+            <a class="categories-link" href="/categories/《深入理解计算机系统》/">《深入理解计算机系统》</a>
+            </font>
+          
+
+          
+
+      </span>
+    </div>
+    
+    
+
+    <h1 class="post-title">实现 Y86 处理器 —— 流水线实现</h1>
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <p>在 SEQ 的结构中，一条指令必须等到它之前的指令执行完毕，才能被执行。</p>
+<p>通过流水线技术，可以增加系统的 <em>吞吐量（throughput）</em>，也就是单位时间内执行的指令数量。</p>
+<p>执行一条指令所花费的时间称为 <em>延迟（latency）</em>。</p>
+<a id="more"></a>
+<h2>计算流水线</h2>
+<p>计算流水线：即，将一个指令的执行过程拆分为多个阶段，每个阶段完成指令执行的一部分。</p>
+<p>这样，一条指令不必等到它之前的指令执行完毕才开始执行，</p>
+<p>为了保存指令在某个阶段的状态并传输给下一个阶段，在各个阶段之间会放入 <em>流水线寄存器（pipeline registers）</em>。</p>
+<p><img src="/image/2018/03/un_pipeline.png?120" alt="非流水线化的计算硬件"></p>
+<p><img src="/image/2018/03/pipeline.png?120" alt="流水线化的计算硬件"></p>
+<p>上例中，非流水线化的计算硬件需要 320 ps 执行一条指令，而流水线化的计算硬件在 120 ps 即可执行一条指令。</p>
+<h3>局限性</h3>
+<p>可以使用如下公式来计算吞吐量：</p>
+<p>$$throughput = {1 \over {t + T / n}}$$</p>
+<p>上式中，t 为流水线寄存器所产生的的延迟；T 指令的延迟（不含在流水线寄存器上的延迟）；n 为流水线上的阶段数。</p>
+<p>由公式可见：</p>
+<ol>
+<li>
+<p>在其他参数不变的情况下，<strong>流水线越深（n 越大），系统的吞吐量越大</strong>；</p>
+<p>而现实是，处理器中的某些硬件单元，如 ALU 和存储器是不能被划分为多个延迟较小的单元的，这就限制了流水线的深度。</p>
+</li>
+<li>
+<p>对于流水线，<strong>系统的吞吐量受到速度最慢的阶段所限制</strong>，因为我们必须按照速度最慢的阶段来设定时钟周期，这会造成 T 变大，吞吐量变小。</p>
+<p>所以需要尽量按照个部件处理信号的顺序、延迟等，把他们划分到合适的阶段，使得不同的阶段具有相同的延迟。</p>
+</li>
+<li>
+<p>当流水线足够深时，流水线寄存器的延迟就成为了一个重要的限制因素。</p>
+</li>
+</ol>
+<blockquote>
+<p>现代处理器采用了很深的流水线——15 或更多的阶段。</p>
+<p>显然，流水线越深，指令的延迟越大，不过这并不那么重要。</p>
+</blockquote>
+<h3>相互关联的指令</h3>
+<p>很多指令需要使用其之前的指令的执行结果，例如：</p>
+<ol>
+<li>
+<p>数据相关（data depandency），例如：</p>
+<pre><code class="language-com">irmovl $50 %eax
+addl %eax, %ebx
+</code></pre>
+</li>
+<li>
+<p>控制相关（control dependecy），例如：</p>
+<pre><code class="language-com">subl %edx, %ebx
+jne targ
+</code></pre>
+</li>
+</ol>
+<p>顺序执行时，下一条指令都是在之前指令执行完毕后才执行的所以不存在问题。</p>
+<p>而对于流水线来说，下一条指令开始执行时（即进入取指阶段），上一条指令才刚刚进入译码阶段。必须以某种方式来处理指令间的数据和控制相关，相关内容见下一篇文章：数据冒险。</p>
+<h2>Y86 的流水线实现</h2>
+<p><img src="/image/2018/03/pipe-.png?120" alt="PIPE- 的硬件结构"></p>
+<p>信号命名规则：</p>
+<ul>
+<li>
+<p>存储在流水线寄存器中的参数：前面加上大写的流水线寄存器的名字作为前缀，如 E_valA。</p>
+</li>
+<li>
+<p>在某阶段刚输出的参数：前面加上小写的阶段名的首字母作为前缀，如 e_valE。</p>
+</li>
+</ul>
+<p>将 Y86 从 SEQ 改造为流水线实现 PIPE-，主要需要关注的有：</p>
+<ol>
+<li>
+<p>将 PC 的计算移动到了取指阶段；</p>
+<p>这种对状态元素的改进称为 <em>电路重定时（circuit retiming）</em>。重定时改变了一个系统状态的表示，但是不改变它的逻辑行为。<strong>通常用来平衡一个系统中一个系统中各个阶段的延迟。</strong></p>
+<blockquote>
+<p>在 PIPE- 中，没有硬件寄存器对应 PC。CPU 不需要在硬件实现上和程序员可见状态相对应，只要能够为任意的程序员可见状态产生正确的值即可。</p>
+</blockquote>
+<p>除了平衡各阶段的延迟，我认为更为重要的是：<strong>流水线的实现要求我们在取指阶段就能够获知下一条指令的地址</strong>。</p>
+<p>除了条件转移指令和 ret 以外，在取指阶段中，我们能够确定下一条指令的地址：call 和 jmp 就是常数字 valC，其他指令则为 valP。</p>
+<ul>
+<li>
+<p>条件转移指令，简单起见，总是预测选择了条件；那么我们就要处理预测失败的情况。</p>
+</li>
+<li>
+<p>ret 则暂停处理新指令，直到 ret 指令通过写回阶段。</p>
+</li>
+</ul>
+<p>条件转移指令和 ret 的处理将在下一篇文章：数据冒险中详述。</p>
+</li>
+<li>
+<p>在各个阶段之间加上了流水线寄存器；</p>
+</li>
+<li>
+<p>译码阶段添加了 Select A 的块。</p>
+<p>这主要是为了减少携带给流水线寄存器 E 和 M 的状态数量。</p>
+<p>在所有指令的执行、访存和写回阶段中，call 指令在访存阶段使用到了 valP，条件跳转指令在无需跳转时使用到了 valP，且这些指令都不使用 valA，所以此处进行了信号的合并。</p>
+<blockquote>
+<p>可以查看《实现 Y86 处理器 —— 指令执行分析及顺序实现》文中追踪指令的执行的表格。</p>
+<p>“条件跳转指令在无需跳转时使用到了 valP”涉及到流水线冒险，将在下节中介绍。</p>
+<p>另外，顺序执行的更新 PC 阶段已经移动到了取指阶段，所以不需要考虑更新 PC 阶段还要用到 valP。</p>
+</blockquote>
+<p>在硬件设计中，确认信号是如何使用的，然后通过信号合并来减少寄存器状态和线路的数量，是很常见的。</p>
+</li>
+</ol>
+<blockquote>
+<p>关于 PIPE- 其他细节不必过于深究，在有关 PIPE 的章节中会详细剖析。</p>
+</blockquote>
+
+  </section>
+
+  <section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 --> 
+</section>
+
+
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2014-2015. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/someus/huno">Huno</a></span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+    
+
+    
+
+    <script type="text/javascript" src="http://106.14.137.70:8080/MathJax-2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+    <!-- Start: appended by Bob -->
+    <script src="/js/prism.js"></script>
+    <script src="/js/image_size.js"></script>
+    <!-- End: appended by Bob -->
+</body>
+</html>
